@@ -1,10 +1,15 @@
 .DS_Store
+.aws/
+.codex/
+.agents/
+.swiftpm/
 DerivedData/
 .build/
 .build-device/
 .build-sim/
 build/
 *.xcarchive/
+*.xcresult/
 *.ipa
 *.mobileprovision
 *.p8
