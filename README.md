@@ -2,13 +2,21 @@
 
 An independent, open source iPhone listener for WFUV. It plays WFUV's own live stream, including station messages and ads. Listen combines a live player with the full timestamped playlist in one scroll; a compact player stays at the top as the feed moves underneath. Favorite songs have their own tab.
 
+## A note from a WFUV fan
+
+WFUV is a great public radio resource for music discovery, live performances, and the people behind the songs. This app is a fan-made way to enjoy the station. Our pledge is to keep WFUV at the center: play its live stream intact, point listeners back to its programming, and encourage direct support for the station. **If WFUV matters to you, [become a member or make a donation through WFUV](https://wfuv.org/membership).**
+
+FUV Listener is independent and is not affiliated with or endorsed by WFUV or Fordham University.
+
 ## Open and run
 
 Open `FUVListener.xcodeproj` in Xcode 16 or later. Select an iPhone simulator or device and run. The app targets iOS 17 and later. For a device build, choose your development team in Signing & Capabilities.
 
 ## Screenshots
 
-[Listen](Screenshots/listen.png), [compact player](Screenshots/compact-player.png), [Favorites](Screenshots/favorites.png), and [Markdown share sheet](Screenshots/share-sheet.png).
+| Listen and recent playlist | Favorites | Share favorites as Markdown |
+| :---: | :---: | :---: |
+| <img src="Screenshots/listen.png" alt="Listen screen showing the live player and recent playlist" width="240"> | <img src="Screenshots/favorites.png" alt="Favorites screen showing favorited songs and album artwork" width="240"> | <img src="Screenshots/share-sheet.png" alt="iOS share sheet for the Markdown favorites export" width="240"> |
 
 ## Sources
 
@@ -25,7 +33,7 @@ Tap a song in Listen or Favorites to search for it on Spotify. Favorites remain 
 
 The app bundles Bitter and Heebo fonts under the SIL Open Font License; license files are in `FUVListener/Fonts`. The visual review is in [DESIGN_REVIEW.md](DESIGN_REVIEW.md), and the current rules are in [DESIGN_GUIDE.md](DESIGN_GUIDE.md).
 
-This project is independent and is not affiliated with or endorsed by WFUV or Fordham University. WFUV's name identifies the stream being played. Please support the station through its membership link in the app.
+WFUV's name identifies the stream being played. The app also links directly to the station's membership page.
 
 ## License
 
