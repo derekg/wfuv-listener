@@ -226,6 +226,7 @@ final class RadioStore: ObservableObject {
         errorMessage = nil
         player?.play()
         updateNowPlayingInfo()
+        Task { await refresh() }
     }
 
     func pause() {
