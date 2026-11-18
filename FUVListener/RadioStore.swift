@@ -29,6 +29,8 @@ final class RadioStore: ObservableObject {
     }
 
     private var player: AVPlayer?
+    private var pausedAt: Date?
+    private let liveResumeWindow: TimeInterval = 30
     private var statusObserver: NSKeyValueObservation?
     private var itemStatusObserver: NSKeyValueObservation?
     private var playbackErrorObserver: NSObjectProtocol?
@@ -181,6 +183,14 @@ final class RadioStore: ObservableObject {
             errorMessage = "Audio could not start. Check your device audio settings."
             return
         }
+        if let pausedAt {
+            let elapsed = Date.now.timeIntervalSince(pausedAt)
+            if elapsed < 0 || elapsed >= liveResumeWindow {
+                discardPlayer()
+            }
+        }
+        if player?.currentItem?.status == .failed { discardPlayer() }
+        pausedAt = nil
         if player == nil {
             let item = AVPlayerItem(url: dataSaverEnabled ? WFUVService.dataSaverStreamURL : WFUVService.highQualityStreamURL)
             let newPlayer = AVPlayer(playerItem: item)
@@ -196,6 +206,9 @@ final class RadioStore: ObservableObject {
             statusObserver = newPlayer.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, _ in
                 Task { @MainActor [weak self] in
                     guard self?.player === player else { return }
+                    if player.timeControlStatus == .paused && self?.isPlaying == true && self?.pausedAt == nil {
+                        self?.pausedAt = .now
+                    }
                     self?.isPlaying = player.timeControlStatus == .playing
                     self?.isLoading = player.timeControlStatus == .waitingToPlayAtSpecifiedRate
                     self?.updateNowPlayingInfo()
@@ -217,18 +230,24 @@ final class RadioStore: ObservableObject {
 
     func pause() {
         player?.pause()
+        pausedAt = .now
         isPlaying = false
         isLoading = false
         updateNowPlayingInfo()
     }
 
-    func reconnect() {
-        pause()
+    private func discardPlayer() {
+        player?.pause()
         statusObserver = nil
         itemStatusObserver = nil
         player = nil
         if let playbackErrorObserver { NotificationCenter.default.removeObserver(playbackErrorObserver) }
         playbackErrorObserver = nil
+    }
+
+    func reconnect() {
+        pause()
+        discardPlayer()
         play()
     }
 
@@ -236,11 +255,7 @@ final class RadioStore: ObservableObject {
         guard dataSaverEnabled != enabled else { return }
         let wasPlaying = isPlaying || isLoading
         pause()
-        statusObserver = nil
-        itemStatusObserver = nil
-        player = nil
-        if let playbackErrorObserver { NotificationCenter.default.removeObserver(playbackErrorObserver) }
-        playbackErrorObserver = nil
+        discardPlayer()
         dataSaverEnabled = enabled
         UserDefaults.standard.set(enabled, forKey: "dataSaverEnabled.v1")
         if wasPlaying { play() }
